@@ -4,7 +4,4 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 1
-    path: Assets/LensTestPattern.unity
-    guid: 58bd2dde9bc99764684ba88c2e76a516
+  m_Scenes: []
