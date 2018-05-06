@@ -8,15 +8,21 @@ using UnityEditor;
 
 using UnityEngine;
 
+// Test Pattern Initial Transform & Scale
+// Transform [x, y, z] (0, 0, 4)
+// Rotation  [x, y, z] (0, 0, 0)
+// Scale     [x, y, z] (5.5, 5.5, 0.1)
+
 public class PatternController : MonoBehaviour {
 
     // comfortable values before clipping occurs
-    const float MIN_DISTANCE = 10.0f;
-    const float MAX_DISTANCE = 900.0f;
-    const float MIN_ANGLE = -90.0f;
-    const float MAX_ANGLE = 90.0f;
-    const float Z_INCREMENT = 1.0f;
-    const float ROTATE_INCREMENT = 1.0f;
+    private const float MIN_DISTANCE = 0.0f;
+    private const float MAX_DISTANCE = 1000.0f;
+    private const float MIN_ANGLE = -90.0f;
+    private const float MAX_ANGLE = 90.0f;
+    private const float Z_INCREMENT = 0.10f;
+    private const float ROTATE_INCREMENT = 1.0f;
+    private const float DEFAULT_Z_POSITION = 4.0f;
 
     private enum PatternMode
     {
@@ -31,6 +37,8 @@ public class PatternController : MonoBehaviour {
 
     [Tooltip("Parent for fixed Pattern Mode.")]
     public Transform patternParent;
+
+    private float zPosition = DEFAULT_Z_POSITION;
     	
 	// Update is called once per frame
 	void Update () {
@@ -85,29 +93,33 @@ public class PatternController : MonoBehaviour {
         switch (newMode)
         {
             case PatternMode.Default:
-                UnparentCanvas();
+                UnparentPattern();
                 break;
             case PatternMode.HmdFixed:
-                ParentCanvasToHmd();
+                ParentPatternToHmd();
                 break;
             default:
                 break;
         }
     }
 
-    private void ParentCanvasToHmd()
+    private void ParentPatternToHmd()
     {
         if ((this.patternParent != null) && (this.pattern != null))
-        {
+        {            
             this.pattern.parent = this.patternParent;
+            this.pattern.localPosition = new Vector3(0.0f, 0.0f, DEFAULT_Z_POSITION);
+            this.pattern.localRotation = Quaternion.identity;
         }
     }
 
-    private void UnparentCanvas()
+    private void UnparentPattern()
     {
         if (this.pattern != null)
         {
             this.pattern.parent = null;
+            this.pattern.position = new Vector3(0.0f, 0.0f, DEFAULT_Z_POSITION);
+            this.pattern.rotation = Quaternion.identity;
         }
     }
 
@@ -115,23 +127,46 @@ public class PatternController : MonoBehaviour {
     {
         if (this.pattern != null)
         {
-            var newVector = new Vector3(0.0f, 0.0f, pattern.position.z + increment);
+            bool hasParent = (this.pattern.parent != null);
 
-            if ((newVector.z >= MIN_DISTANCE) && (newVector.z <= MAX_DISTANCE))
+            zPosition += increment;
+
+            if ((zPosition >= MIN_DISTANCE) && (zPosition <= MAX_DISTANCE))
             {
-                pattern.position = newVector;
+                if (hasParent)
+                {
+                    this.pattern.localPosition = new Vector3(0.0f, 0.0f, zPosition);
+                    this.pattern.localRotation = Quaternion.identity;
+                }
+                else
+                {
+                    this.pattern.position = new Vector3(0.0f, 0.0f, zPosition);
+                    this.pattern.rotation = Quaternion.identity;
+                }
             }
         }
     }
 
     private void RotatePattern(float increment)
-    {
+    {        
         if (this.pattern != null)
         {
-            Vector3 eulerAngles = pattern.rotation.eulerAngles;
-            float xAngle = (float)(Convert.ToInt32((eulerAngles.x + increment) * 100) / 100);
+            bool hasParent = (this.pattern.parent != null);
 
-            this.pattern.rotation = Quaternion.Euler(xAngle, 0, 0);
+            if (hasParent)
+            {
+                Vector3 eulerAngles = pattern.localRotation.eulerAngles;
+                float xAngle = (float)(Convert.ToInt32((eulerAngles.x + increment) * 100) / 100);
+
+                this.pattern.localRotation = Quaternion.Euler(xAngle, 0, 0);
+            }
+            else
+            {
+                Vector3 eulerAngles = pattern.rotation.eulerAngles;
+                float xAngle = (float)(Convert.ToInt32((eulerAngles.x + increment) * 100) / 100);
+
+                this.pattern.rotation = Quaternion.Euler(xAngle, 0, 0);
+            }
         }
     }
 }
