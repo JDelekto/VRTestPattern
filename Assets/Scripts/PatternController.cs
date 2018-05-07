@@ -118,7 +118,7 @@ public class PatternController : MonoBehaviour {
         if (this.pattern != null)
         {
             this.pattern.parent = null;
-            this.pattern.position = new Vector3(0.0f, 0.0f, DEFAULT_Z_POSITION);
+            this.pattern.position = new Vector3(0.0f, 2.5f, DEFAULT_Z_POSITION);
             this.pattern.rotation = Quaternion.identity;
         }
     }
