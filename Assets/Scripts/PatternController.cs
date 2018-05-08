@@ -8,11 +8,6 @@ using UnityEditor;
 
 using UnityEngine;
 
-// Test Pattern Initial Transform & Scale
-// Transform [x, y, z] (0, 0, 4)
-// Rotation  [x, y, z] (0, 0, 0)
-// Scale     [x, y, z] (5.5, 5.5, 0.1)
-
 public class PatternController : MonoBehaviour {
 
     // comfortable values before clipping occurs
@@ -23,6 +18,7 @@ public class PatternController : MonoBehaviour {
     private const float Z_INCREMENT = 0.10f;
     private const float ROTATE_INCREMENT = 1.0f;
     private const float DEFAULT_Z_POSITION = 4.0f;
+    private const float FLOOR_Y_ADJUSTMENT = 2.5f;
 
     private enum PatternMode
     {
@@ -106,7 +102,8 @@ public class PatternController : MonoBehaviour {
     private void ParentPatternToHmd()
     {
         if ((this.patternParent != null) && (this.pattern != null))
-        {            
+        {
+            zPosition = DEFAULT_Z_POSITION;
             this.pattern.parent = this.patternParent;
             this.pattern.localPosition = new Vector3(0.0f, 0.0f, DEFAULT_Z_POSITION);
             this.pattern.localRotation = Quaternion.identity;
@@ -117,8 +114,9 @@ public class PatternController : MonoBehaviour {
     {
         if (this.pattern != null)
         {
+            zPosition = DEFAULT_Z_POSITION;
             this.pattern.parent = null;
-            this.pattern.position = new Vector3(0.0f, 2.5f, DEFAULT_Z_POSITION);
+            this.pattern.position = new Vector3(0.0f, FLOOR_Y_ADJUSTMENT, DEFAULT_Z_POSITION);
             this.pattern.rotation = Quaternion.identity;
         }
     }
@@ -140,7 +138,7 @@ public class PatternController : MonoBehaviour {
                 }
                 else
                 {
-                    this.pattern.position = new Vector3(0.0f, 0.0f, zPosition);
+                    this.pattern.position = new Vector3(0.0f, FLOOR_Y_ADJUSTMENT, zPosition);
                     this.pattern.rotation = Quaternion.identity;
                 }
             }
