@@ -10,4 +10,4 @@ be imported into the project in order to work.
 The pattern is a canvas in Worldspace that can be moved forward or backward along the Z-axis
 one unit at a time using the arrow keys.  Using the Up arrow key moves the pattern closer into
 view, the Down arrow key moves the pattern further away.  It is limited to nearest of 10 units
-and furthest of 900.  The 'Q' key will exist the application.
+and furthest of 900.  The 'Q' key will exit the application.
